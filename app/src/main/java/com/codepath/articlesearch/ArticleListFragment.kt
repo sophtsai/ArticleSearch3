@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
+import kotlinx.serialization.json.Json
 import okhttp3.Headers
 import org.json.JSONException
 
@@ -18,20 +19,27 @@ private const val SEARCH_API_KEY = BuildConfig.API_KEY
 private const val ARTICLE_SEARCH_URL =
     "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=${SEARCH_API_KEY}"
 
+fun createJson() = Json {
+    isLenient = true
+    ignoreUnknownKeys = true
+    useAlternativeNames = false
+}
+
 class ArticleListFragment : Fragment() {
+
     private val articles = mutableListOf<Article>()
     private lateinit var articlesRecyclerView: RecyclerView
     private lateinit var articleAdapter: ArticleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Change this statement to store the view in a variable instead of a return statement
         val view = inflater.inflate(R.layout.fragment_article_list, container, false)
 
         // Add these configurations for the recyclerView and to configure the adapter
@@ -47,15 +55,10 @@ class ArticleListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): ArticleListFragment{
-                return ArticleListFragment()
-        }
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // Call the new method within onViewCreated
-        fetchArticles()
+        fun newInstance() : ArticleListFragment {
+            return ArticleListFragment()
+        }
     }
 
     private fun fetchArticles() {
@@ -87,5 +90,11 @@ class ArticleListFragment : Fragment() {
             }
 
         })
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Call the new method within onViewCreated
+        fetchArticles()
     }
 }
